@@ -1,15 +1,29 @@
-<h1>Stables</h1>
+@extends('layouts.app')
 
-<p><a href="{{ route('stables.create') }}">Create new stable</a></p>
+@section('content')
+<h1 class="mb-3">Stables</h1>
 
-@if(session('success'))
-  <p>{{ session('success') }}</p>
-@endif
+<a href="{{ route('stables.create') }}" class="btn btn-primary mb-3">Create new stable</a>
 
-<ul>
-@foreach($stables as $stable)
-  <li>
-    <a href="{{ route('stables.show', $stable) }}">{{ $stable->name }}</a>
-  </li>
-@endforeach
-</ul>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th style="width: 220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach($stables as $stable)
+        <tr>
+            <td>{{ $stable->name }}</td>
+            <td>{{ $stable->location ?? '-' }}</td>
+            <td>
+                <a href="{{ route('stables.show', $stable) }}" class="btn btn-sm btn-info">View</a>
+                <a href="{{ route('stables.edit', $stable) }}" class="btn btn-sm btn-warning">Edit</a>
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
+@endsection

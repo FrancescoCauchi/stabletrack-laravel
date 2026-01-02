@@ -1,26 +1,39 @@
-<h1>Create Stable</h1>
+@extends('layouts.app')
+
+@section('content')
+<h1 class="mb-3">Create Stable</h1>
 
 @if ($errors->any())
-  <ul>
-    @foreach ($errors->all() as $error)
-      <li>{{ $error }}</li>
-    @endforeach
-  </ul>
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
 @endif
 
-<form method="POST" action="{{ route('stables.store') }}">
-  @csrf
+<form method="POST" action="{{ route('stables.store') }}" class="card card-body">
+    @csrf
 
-  <label>Name</label><br>
-  <input type="text" name="name" value="{{ old('name') }}"><br><br>
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input class="form-control" type="text" name="name" value="{{ old('name') }}">
+    </div>
 
-  <label>Location</label><br>
-  <input type="text" name="location" value="{{ old('location') }}"><br><br>
+    <div class="mb-3">
+        <label class="form-label">Location</label>
+        <input class="form-control" type="text" name="location" value="{{ old('location') }}">
+    </div>
 
-  <label>Description</label><br>
-  <textarea name="description">{{ old('description') }}</textarea><br><br>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description" rows="4">{{ old('description') }}</textarea>
+    </div>
 
-  <button type="submit">Save</button>
+    <div class="d-flex gap-2">
+        <button class="btn btn-success" type="submit">Save</button>
+        <a class="btn btn-secondary" href="{{ route('stables.index') }}">Back</a>
+    </div>
 </form>
-
-<p><a href="{{ route('stables.index') }}">Back</a></p>
+@endsection
