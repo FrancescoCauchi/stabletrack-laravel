@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Horse extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'stable_id',
+        'name',
+        'slug',
+        'breed',
+        'age',
+        'notes',
+    ];
+
+    public function stable()
+    {
+        return $this->belongsTo(Stable::class);
+    }
 }

@@ -15,4 +15,9 @@ class Stable extends Model
         'location',
         'description',
     ];
+
+    public function horses()
+    {
+        return $this->hasMany(Horse::class);
+    }
 }
