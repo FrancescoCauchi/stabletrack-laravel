@@ -21,7 +21,17 @@
         <p><strong>Stable:</strong> {{ $horse->stable->name }}</p>
         <p><strong>Breed:</strong> {{ $horse->breed ?? '-' }}</p>
         <p><strong>Age:</strong> {{ $horse->age ?? '-' }}</p>
-        <p class="mb-0"><strong>Notes:</strong> {{ $horse->notes ?? '-' }}</p>
+        <p><strong>Notes:</strong> {{ $horse->notes ?? '-' }}</p>
+
+        {{-- NEW: LeTROT link --}}
+        <p class="mb-0">
+            <strong>LeTROT:</strong>
+            @if($horse->letrot_url)
+                <a href="{{ $horse->letrot_url }}" target="_blank">View profile</a>
+            @else
+                -
+            @endif
+        </p>
     </div>
 </div>
 

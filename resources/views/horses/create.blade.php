@@ -47,6 +47,24 @@
         <textarea class="form-control" name="notes" rows="4">{{ old('notes') }}</textarea>
     </div>
 
+    {{-- NEW: LeTROT URL --}}
+    <div class="mb-3">
+        <label class="form-label">LeTROT Profile URL (optional)</label>
+        <input
+            type="url"
+            name="letrot_url"
+            class="form-control @error('letrot_url') is-invalid @enderror"
+            value="{{ old('letrot_url') }}"
+            placeholder="https://www.letrot.com/..."
+        >
+        @error('letrot_url')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        <div class="form-text">
+            Paste the horse’s LeTROT profile link to confirm it has raced in France.
+        </div>
+    </div>
+
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-success">Save</button>
         <a href="{{ route('horses.index') }}" class="btn btn-secondary">Back</a>
