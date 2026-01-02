@@ -1,5 +1,9 @@
 <h1>{{ $stable->name }}</h1>
 
+@if(session('success'))
+  <p>{{ session('success') }}</p>
+@endif
+
 <p><strong>Location:</strong> {{ $stable->location ?? '-' }}</p>
 <p><strong>Description:</strong> {{ $stable->description ?? '-' }}</p>
 

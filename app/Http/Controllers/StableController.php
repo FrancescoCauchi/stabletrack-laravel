@@ -2,63 +2,92 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class StableController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $stables = Stable::orderBy('name')->get();
+        return view('stables.index', compact('stables'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('stables.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+
+        // ensure unique slug
+        $base = $validated['slug'];
+        $i = 2;
+        while (Stable::where('slug', $validated['slug'])->exists()) {
+            $validated['slug'] = $base . '-' . $i;
+            $i++;
+        }
+
+        $stable = Stable::create($validated);
+
+        return redirect()
+            ->route('stables.show', $stable)
+            ->with('success', 'Stable created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Stable $stable)
     {
-        //
+        return view('stables.show', compact('stable'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Stable $stable)
     {
-        //
+        return view('stables.edit', compact('stable'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Stable $stable)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        if ($validated['name'] !== $stable->name) {
+            $slug = Str::slug($validated['name']);
+            $base = $slug;
+            $i = 2;
+
+            while (Stable::where('slug', $slug)->where('id', '!=', $stable->id)->exists()) {
+                $slug = $base . '-' . $i;
+                $i++;
+            }
+
+            $validated['slug'] = $slug;
+        }
+
+        $stable->update($validated);
+
+        return redirect()
+            ->route('stables.show', $stable)
+            ->with('success', 'Stable updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Stable $stable)
     {
-        //
+        $stable->delete();
+
+        return redirect()
+            ->route('stables.index')
+            ->with('success', 'Stable deleted successfully.');
     }
 }

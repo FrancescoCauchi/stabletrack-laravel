@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Stable extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'location',
+        'description',
+    ];
 }
