@@ -20,7 +20,8 @@
         <label class="form-label">Stable</label>
         <select class="form-select" name="stable_id">
             @foreach($stables as $stable)
-                <option value="{{ $stable->id }}" @selected(old('stable_id') == $stable->id)>
+                <option value="{{ $stable->id }}"
+                    @selected(old('stable_id', $selectedStableId ?? null) == $stable->id)>
                     {{ $stable->name }}
                 </option>
             @endforeach
@@ -47,7 +48,6 @@
         <textarea class="form-control" name="notes" rows="4">{{ old('notes') }}</textarea>
     </div>
 
-    {{-- NEW: LeTROT URL --}}
     <div class="mb-3">
         <label class="form-label">LeTROT Profile URL (optional)</label>
         <input

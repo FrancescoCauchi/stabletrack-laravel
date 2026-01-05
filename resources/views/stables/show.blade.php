@@ -25,7 +25,11 @@
 
 <div class="d-flex justify-content-between align-items-center mb-2">
     <h2 class="h4 mb-0">Horses in this stable</h2>
-    <a class="btn btn-primary btn-sm" href="{{ route('horses.create') }}">Add Horse</a>
+
+    {{-- UPDATED: preselect stable on create horse --}}
+    <a class="btn btn-primary btn-sm" href="{{ route('horses.create', ['stable_id' => $stable->id]) }}">
+        Add Horse
+    </a>
 </div>
 
 @if($stable->horses->isEmpty())
