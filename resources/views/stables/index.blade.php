@@ -10,7 +10,7 @@
         <tr>
             <th>Name</th>
             <th>Location</th>
-            <th style="width: 220px;">Actions</th>
+            <th style="width: 280px;">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -18,9 +18,16 @@
         <tr>
             <td>{{ $stable->name }}</td>
             <td>{{ $stable->location ?? '-' }}</td>
-            <td>
+            <td class="d-flex gap-2">
                 <a href="{{ route('stables.show', $stable) }}" class="btn btn-sm btn-info">View</a>
                 <a href="{{ route('stables.edit', $stable) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                <form method="POST" action="{{ route('stables.destroy', $stable) }}"
+                      onsubmit="return confirm('Delete this stable?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
             </td>
         </tr>
     @endforeach

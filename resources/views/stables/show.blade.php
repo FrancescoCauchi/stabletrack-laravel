@@ -3,11 +3,12 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="mb-0">{{ $stable->name }}</h1>
+
     <div class="d-flex gap-2">
         <a href="{{ route('stables.edit', $stable) }}" class="btn btn-warning">Edit</a>
 
         <form method="POST" action="{{ route('stables.destroy', $stable) }}"
-              onsubmit="return confirm('Delete this stable?');">
+              onsubmit="return confirm('Delete this stable? This will also delete its horses (if you enabled cascade).');">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger">Delete</button>

@@ -23,7 +23,6 @@
         <p><strong>Age:</strong> {{ $horse->age ?? '-' }}</p>
         <p><strong>Notes:</strong> {{ $horse->notes ?? '-' }}</p>
 
-        {{-- NEW: LeTROT link --}}
         <p class="mb-0">
             <strong>LeTROT:</strong>
             @if($horse->letrot_url)
