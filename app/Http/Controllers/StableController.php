@@ -29,7 +29,6 @@ class StableController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
 
-        // ensure unique slug
         $base = $validated['slug'];
         $i = 2;
         while (Stable::where('slug', $validated['slug'])->exists()) {
@@ -46,6 +45,11 @@ class StableController extends Controller
 
     public function show(Stable $stable)
     {
+        // Load horses relationship for display
+        $stable->load(['horses' => function ($q) {
+            $q->orderBy('name');
+        }]);
+
         return view('stables.show', compact('stable'));
     }
 
