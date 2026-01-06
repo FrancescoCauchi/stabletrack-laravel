@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Horse;
 use App\Models\Stable;
+use App\Models\HorseStatus;
 use App\Services\LeTrotService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,17 +13,17 @@ class HorseController extends Controller
 {
     public function index()
     {
-        $horses = Horse::with('stable')->orderBy('name')->get();
+        $horses = Horse::with(['stable', 'status'])->orderBy('name')->get();
         return view('horses.index', compact('horses'));
     }
 
-    // UPDATED: accept ?stable_id= in URL to preselect stable
     public function create(Request $request)
     {
         $stables = Stable::orderBy('name')->get();
+        $statuses = HorseStatus::orderBy('name')->get();
         $selectedStableId = $request->query('stable_id');
 
-        return view('horses.create', compact('stables', 'selectedStableId'));
+        return view('horses.create', compact('stables', 'statuses', 'selectedStableId'));
     }
 
     public function store(Request $request)
@@ -30,13 +31,13 @@ class HorseController extends Controller
         $validated = $request->validate([
             'stable_id' => ['required', 'exists:stables,id'],
             'name' => ['required', 'string', 'max:255'],
-            'breed' => ['nullable', 'string', 'max:255'],
-            'age' => ['nullable', 'integer', 'min:0'],
+            'breed' => ['required', 'string', 'max:255'],
+            'age' => ['required', 'integer', 'min:0'],
             'notes' => ['nullable', 'string'],
             'letrot_url' => ['nullable', 'url', 'max:255'],
+            'horse_status_id' => ['required', 'exists:horse_statuses,id'], 
         ]);
 
-        // External validation using LeTROT
         $leTrot = new LeTrotService();
         if (!empty($validated['letrot_url']) && !$leTrot->profileExists($validated['letrot_url'])) {
             return back()
@@ -44,7 +45,6 @@ class HorseController extends Controller
                 ->withInput();
         }
 
-        // Slug generation + uniqueness
         $validated['slug'] = Str::slug($validated['name']);
         $base = $validated['slug'];
         $i = 2;
@@ -62,14 +62,16 @@ class HorseController extends Controller
 
     public function show(Horse $horse)
     {
-        $horse->load('stable');
+        $horse->load(['stable', 'status']);
         return view('horses.show', compact('horse'));
     }
 
     public function edit(Horse $horse)
     {
         $stables = Stable::orderBy('name')->get();
-        return view('horses.edit', compact('horse', 'stables'));
+        $statuses = HorseStatus::orderBy('name')->get();
+
+        return view('horses.edit', compact('horse', 'stables', 'statuses'));
     }
 
     public function update(Request $request, Horse $horse)
@@ -77,13 +79,13 @@ class HorseController extends Controller
         $validated = $request->validate([
             'stable_id' => ['required', 'exists:stables,id'],
             'name' => ['required', 'string', 'max:255'],
-            'breed' => ['nullable', 'string', 'max:255'],
-            'age' => ['nullable', 'integer', 'min:0'],
+            'breed' => ['required', 'string', 'max:255'],
+            'age' => ['required', 'integer', 'min:0'],
             'notes' => ['nullable', 'string'],
             'letrot_url' => ['nullable', 'url', 'max:255'],
+            'horse_status_id' => ['required', 'exists:horse_statuses,id']
         ]);
 
-        // External validation using LeTROT
         $leTrot = new LeTrotService();
         if (!empty($validated['letrot_url']) && !$leTrot->profileExists($validated['letrot_url'])) {
             return back()
@@ -91,7 +93,6 @@ class HorseController extends Controller
                 ->withInput();
         }
 
-        // Regenerate slug if name changed
         if ($validated['name'] !== $horse->name) {
             $slug = Str::slug($validated['name']);
             $base = $slug;
