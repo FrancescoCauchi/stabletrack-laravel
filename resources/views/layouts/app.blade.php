@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>StableTrack</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -13,9 +12,10 @@
     <div class="container">
         <a class="navbar-brand" href="/">StableTrack</a>
 
-        <div>
-            <a class="btn btn-outline-light me-2" href="{{ route('stables.index') }}">Stables</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" href="{{ route('stables.index') }}">Stables</a>
             <a class="btn btn-outline-light" href="{{ route('horses.index') }}">Horses</a>
+            <a class="btn btn-outline-light" href="{{ route('statuses.index') }}">Statuses</a>
         </div>
     </div>
 </nav>
@@ -30,7 +30,6 @@
     @yield('content')
 </div>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
