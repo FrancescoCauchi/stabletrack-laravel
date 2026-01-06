@@ -29,6 +29,20 @@
         </select>
     </div>
 
+    
+    <div class="mb-3">
+        <label class="form-label">Status </label>
+        <select class="form-select" name="horse_status_id">
+            <option value="">-- Select status --</option>
+            @foreach($statuses as $status)
+                <option value="{{ $status->id }}"
+                    @selected(old('horse_status_id', $horse->horse_status_id) == $status->id)>
+                    {{ $status->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
     <div class="mb-3">
         <label class="form-label">Name</label>
         <input class="form-control" type="text" name="name" value="{{ old('name', $horse->name) }}">
@@ -49,7 +63,6 @@
         <textarea class="form-control" name="notes" rows="4">{{ old('notes', $horse->notes) }}</textarea>
     </div>
 
-    {{-- NEW: LeTROT URL --}}
     <div class="mb-3">
         <label class="form-label">LeTROT Profile URL (optional)</label>
         <input

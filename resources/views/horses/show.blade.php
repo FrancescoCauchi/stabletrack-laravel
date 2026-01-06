@@ -19,6 +19,7 @@
 <div class="card">
     <div class="card-body">
         <p><strong>Stable:</strong> {{ $horse->stable->name }}</p>
+        <p><strong>Status:</strong> {{ $horse->status?->name ?? '-' }}</p>
         <p><strong>Breed:</strong> {{ $horse->breed ?? '-' }}</p>
         <p><strong>Age:</strong> {{ $horse->age ?? '-' }}</p>
         <p><strong>Notes:</strong> {{ $horse->notes ?? '-' }}</p>
