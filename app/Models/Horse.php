@@ -17,10 +17,17 @@ class Horse extends Model
         'age',
         'notes',
         'letrot_url',
+        'horse_status_id', // NEW
     ];
 
     public function stable()
     {
         return $this->belongsTo(Stable::class);
+    }
+
+    
+    public function status()
+    {
+        return $this->belongsTo(HorseStatus::class, 'horse_status_id');
     }
 }
