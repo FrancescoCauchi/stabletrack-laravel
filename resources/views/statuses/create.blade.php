@@ -1,36 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Statuses</h1>
-    <a class="btn btn-primary" href="{{ route('statuses.create') }}">Add Status</a>
-</div>
+<h1 class="mb-3">Add Status</h1>
 
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Horses</th>
-            <th style="width: 260px;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach($statuses as $status)
-        <tr>
-            <td>{{ $status->name }}</td>
-            <td>{{ $status->horses_count }}</td>
-            <td class="d-flex gap-2">
-                <a class="btn btn-sm btn-warning" href="{{ route('statuses.edit', $status) }}">Edit</a>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-                <form method="POST" action="{{ route('statuses.destroy', $status) }}"
-                      onsubmit="return confirm('Delete this status? Horses will keep working but their status will become empty.');">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-    @endforeach
-    </tbody>
-</table>
+<form method="POST" action="{{ route('statuses.store') }}" class="card card-body">
+    @csrf
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input class="form-control" type="text" name="name" value="{{ old('name') }}" placeholder="e.g. Racing">
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-success" type="submit">Save</button>
+        <a class="btn btn-secondary" href="{{ route('statuses.index') }}">Back</a>
+    </div>
+</form>
 @endsection
