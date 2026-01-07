@@ -17,24 +17,43 @@
     @csrf
     @method('PUT')
 
+    {{-- Name --}}
     <div class="mb-3">
         <label class="form-label">Name</label>
-        <input class="form-control" type="text" name="name" value="{{ old('name', $stable->name) }}">
+        <input
+            class="form-control"
+            type="text"
+            name="name"
+            value="{{ old('name', $stable->name) }}"
+            required
+        >
     </div>
 
+    {{-- Location (REQUIRED) --}}
     <div class="mb-3">
         <label class="form-label">Location</label>
-        <input class="form-control" type="text" name="location" value="{{ old('location', $stable->location) }}">
+        <input
+            class="form-control"
+            type="text"
+            name="location"
+            value="{{ old('location', $stable->location) }}"
+            required
+        >
     </div>
 
+    {{-- Description --}}
     <div class="mb-3">
         <label class="form-label">Description</label>
-        <textarea class="form-control" name="description" rows="4">{{ old('description', $stable->description) }}</textarea>
+        <textarea
+            class="form-control"
+            name="description"
+            rows="3"
+        >{{ old('description', $stable->description) }}</textarea>
     </div>
 
     <div class="d-flex gap-2">
-        <button class="btn btn-success" type="submit">Update</button>
-        <a class="btn btn-secondary" href="{{ route('stables.show', $stable) }}">Cancel</a>
+        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{{ route('stables.show', $stable) }}" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 @endsection

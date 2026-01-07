@@ -16,9 +16,10 @@
 <form method="POST" action="{{ route('horses.store') }}" class="card card-body">
     @csrf
 
+    {{-- Stable --}}
     <div class="mb-3">
         <label class="form-label">Stable</label>
-        <select class="form-select" name="stable_id">
+        <select class="form-select" name="stable_id" required>
             @foreach($stables as $stable)
                 <option value="{{ $stable->id }}"
                     @selected(old('stable_id', $selectedStableId ?? null) == $stable->id)>
@@ -28,41 +29,51 @@
         </select>
     </div>
 
-    
+    {{-- Status --}}
     <div class="mb-3">
-        <label class="form-label">Status (optional)</label>
-        <select class="form-select" name="horse_status_id">
-            <option value="">-- Select status --</option>
+        <label class="form-label">Status</label>
+        <select class="form-select" name="horse_status_id" required>
+            <option value="" disabled
+                {{ old('horse_status_id') ? '' : 'selected' }}>
+                -- Select status --
+            </option>
+
             @foreach($statuses as $status)
-                <option value="{{ $status->id }}" @selected(old('horse_status_id') == $status->id)>
+                <option value="{{ $status->id }}"
+                    @selected(old('horse_status_id') == $status->id)>
                     {{ $status->name }}
                 </option>
             @endforeach
         </select>
     </div>
 
+    {{-- Name --}}
     <div class="mb-3">
         <label class="form-label">Name</label>
-        <input class="form-control" type="text" name="name" value="{{ old('name') }}">
+        <input class="form-control" type="text" name="name" value="{{ old('name') }}" required>
     </div>
 
+    {{-- Breed --}}
     <div class="mb-3">
         <label class="form-label">Breed</label>
-        <input class="form-control" type="text" name="breed" value="{{ old('breed') }}">
+        <input class="form-control" type="text" name="breed" value="{{ old('breed') }}" required>
     </div>
 
+    {{-- Age --}}
     <div class="mb-3">
         <label class="form-label">Age</label>
-        <input class="form-control" type="number" name="age" value="{{ old('age') }}">
+        <input class="form-control" type="number" name="age" value="{{ old('age') }}" required>
     </div>
 
+    {{-- Notes --}}
     <div class="mb-3">
         <label class="form-label">Notes</label>
-        <textarea class="form-control" name="notes" rows="4">{{ old('notes') }}</textarea>
+        <textarea class="form-control" name="notes" rows="3">{{ old('notes') }}</textarea>
     </div>
 
+    {{-- LeTROT --}}
     <div class="mb-3">
-        <label class="form-label">LeTROT Profile URL (optional)</label>
+        <label class="form-label">LeTROT Profile URL</label>
         <input
             type="url"
             name="letrot_url"
@@ -73,9 +84,6 @@
         @error('letrot_url')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
-        <div class="form-text">
-            Paste the horse’s LeTROT profile link to confirm it has raced in France.
-        </div>
     </div>
 
     <div class="d-flex gap-2">
