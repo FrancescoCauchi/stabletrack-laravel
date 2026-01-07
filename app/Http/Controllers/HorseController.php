@@ -11,10 +11,64 @@ use Illuminate\Support\Str;
 
 class HorseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $horses = Horse::with(['stable', 'status'])->orderBy('name')->get();
-        return view('horses.index', compact('horses'));
+        $statuses = HorseStatus::orderBy('name')->get();
+
+        $query = Horse::with(['stable', 'status']);
+
+        // Filter by status (query param: ?status=ID)
+        $statusId = $request->query('status');
+        if (!empty($statusId)) {
+            $query->where('horse_status_id', $statusId);
+        }
+
+        // Sort (query param: ?sort=...)
+        $sort = $request->query('sort', 'name_asc');
+
+        switch ($sort) {
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+
+            case 'stable_asc':
+                $query->join('stables', 'horses.stable_id', '=', 'stables.id')
+                      ->orderBy('stables.name', 'asc')
+                      ->select('horses.*');
+                break;
+
+            case 'stable_desc':
+                $query->join('stables', 'horses.stable_id', '=', 'stables.id')
+                      ->orderBy('stables.name', 'desc')
+                      ->select('horses.*');
+                break;
+
+            case 'status_asc':
+                $query->leftJoin('horse_statuses', 'horses.horse_status_id', '=', 'horse_statuses.id')
+                      ->orderBy('horse_statuses.name', 'asc')
+                      ->select('horses.*');
+                break;
+
+            case 'status_desc':
+                $query->leftJoin('horse_statuses', 'horses.horse_status_id', '=', 'horse_statuses.id')
+                      ->orderBy('horse_statuses.name', 'desc')
+                      ->select('horses.*');
+                break;
+
+            case 'name_asc':
+            default:
+                $query->orderBy('name', 'asc');
+                break;
+        }
+
+        $horses = $query->get();
+
+        return view('horses.index', [
+            'horses' => $horses,
+            'statuses' => $statuses,
+            'statusId' => $statusId,
+            'sort' => $sort,
+        ]);
     }
 
     public function create(Request $request)
@@ -30,14 +84,15 @@ class HorseController extends Controller
     {
         $validated = $request->validate([
             'stable_id' => ['required', 'exists:stables,id'],
+            'horse_status_id' => ['required', 'exists:horse_statuses,id'],
             'name' => ['required', 'string', 'max:255'],
             'breed' => ['required', 'string', 'max:255'],
             'age' => ['required', 'integer', 'min:0'],
             'notes' => ['nullable', 'string'],
             'letrot_url' => ['nullable', 'url', 'max:255'],
-            'horse_status_id' => ['required', 'exists:horse_statuses,id'], 
         ]);
 
+        // External validation using LeTROT
         $leTrot = new LeTrotService();
         if (!empty($validated['letrot_url']) && !$leTrot->profileExists($validated['letrot_url'])) {
             return back()
@@ -45,6 +100,7 @@ class HorseController extends Controller
                 ->withInput();
         }
 
+        // Slug generation + uniqueness
         $validated['slug'] = Str::slug($validated['name']);
         $base = $validated['slug'];
         $i = 2;
@@ -78,14 +134,15 @@ class HorseController extends Controller
     {
         $validated = $request->validate([
             'stable_id' => ['required', 'exists:stables,id'],
+            'horse_status_id' => ['required', 'exists:horse_statuses,id'],
             'name' => ['required', 'string', 'max:255'],
             'breed' => ['required', 'string', 'max:255'],
             'age' => ['required', 'integer', 'min:0'],
             'notes' => ['nullable', 'string'],
             'letrot_url' => ['nullable', 'url', 'max:255'],
-            'horse_status_id' => ['required', 'exists:horse_statuses,id']
         ]);
 
+        // External validation using LeTROT
         $leTrot = new LeTrotService();
         if (!empty($validated['letrot_url']) && !$leTrot->profileExists($validated['letrot_url'])) {
             return back()
@@ -93,6 +150,7 @@ class HorseController extends Controller
                 ->withInput();
         }
 
+        // Regenerate slug if name changed
         if ($validated['name'] !== $horse->name) {
             $slug = Str::slug($validated['name']);
             $base = $slug;
