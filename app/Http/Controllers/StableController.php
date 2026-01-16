@@ -23,7 +23,7 @@ class StableController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
+            'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -62,7 +62,7 @@ class StableController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
+            'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
 

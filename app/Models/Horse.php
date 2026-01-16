@@ -17,7 +17,7 @@ class Horse extends Model
         'age',
         'notes',
         'letrot_url',
-        'horse_status_id', // NEW
+        'horse_status_id',
     ];
 
     public function stable()
